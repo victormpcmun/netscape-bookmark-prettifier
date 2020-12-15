@@ -18,7 +18,7 @@ public class Parameters {
     final String filteredBookmarkFilePath;
 
 
-    private Parameters(boolean validParameters, String bookmarkFilePath, String bookmarkFolderName, String prettyBoormarkFilePath, String boormarkFolderFilePath) {
+    private Parameters(boolean validParameters, String bookmarkFilePath,String bookmarkFolderName, String prettyBoormarkFilePath, String boormarkFolderFilePath) {
         this.validParameters = validParameters;
         this.filePath = bookmarkFilePath;
         this.filterFolderName = bookmarkFolderName;
