@@ -1,0 +1,50 @@
+NetscapeBookmarkPrettifier
+
+A simple Prettifier for "NETSCAPE-Bookmark-file-1" DOCTYPE  bookmarks files (html):
+
+USAGE
+
+java -jar target/NetscapeBookmarkPrettifier.jar PATH_BOOKMARK_HTML  FOLDER
+
+Where
+
+- PATH_BOOKMARK_HTML is the path to the raw html file generated when exporting bookmarks in "NETSCAPE-Bookmark-file-1" DOCTYPE format.
+- FOLDER is the name of the folder to be prettified as it appears in the bookmark hierarchy.
+
+Result:
+
+It will generate two files in the PATH_BOOKMARK_HTML file folder:
+
+- prettyBookmarks<FOLDER> is a html page tha will contain a pretty html file with all the boormarks (links). This can be opened in the browser and can be printed.
+- bookmarks<FOLDER> is a "NETSCAPE-Bookmark-file-1" DOCTYPE complian file that contains the bookmarks for the selected folder, it can be imported in a browser.
+
+
+example
+
+java -jar target/NetscapeBookmarkPrettifier.jar ./bookmarks_14_12_20.html TECHNICAL
+
+will generate files prettyBookmarksTECHNICAL.html (containing the pretty version of the bookmarks) and  bookmarksTECHNICAL.html (to be imported in a browser)
+
+
+CONSIDERATIONS
+
+This tool formats the content of the link of a bookmark as markdown:
+
+text between *** is rendered in italic and bold
+text between ** is rendered in italic
+text between * is rendered in bold
+
+text following - character is considered a item of a bulleted list
+
+example
+
+"this is an example of *link* with -item1 -item2"
+
+the result will be:
+
+
+  this is an example of link with
+    * item1
+    * item2
+
+  NOTE: link will appear in bold
