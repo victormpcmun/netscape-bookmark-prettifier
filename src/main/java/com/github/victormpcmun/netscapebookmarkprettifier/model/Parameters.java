@@ -32,7 +32,7 @@ public class Parameters {
             String filePrefix = "all";
             String outputPrettyBookmarkFilePath = getOutputPrettyBookmarkFilePath(inputBookmarkFilePath, filePrefix);
             String outputBookmarkFilePath =  getOutputBookmarkFilePath(inputBookmarkFilePath, filePrefix);
-            return new Parameters(inputBookmarkFilePath, "Barra de marcadores", outputPrettyBookmarkFilePath, outputBookmarkFilePath);
+            return new Parameters(inputBookmarkFilePath, null, outputPrettyBookmarkFilePath, outputBookmarkFilePath);
         } else if (valid2Parameter) {
             String inputBookmarkFilePath=args[0].trim();
             String folderName=args[1].trim();
