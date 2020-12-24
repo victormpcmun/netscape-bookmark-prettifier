@@ -4,63 +4,83 @@ import java.io.File;
 
 public class Parameters {
 
-    private final static String DEFAULT_PRETTY_BOOKMARK_FILE_PATH = "prettyBookmarks";
-    private final static String DEFAULT_BOOKMARK_FOLDER_FILE_PATH = "bookmarks";
+    private final static String DEFAULT_PREFIX_OUTPUT_PRETTY_BOOKMARK_FILE_PATH = "prettyBookmarks";
+    private final static String DEFAULT_PREFIX_OUTPUT_BOOKMARK_FILE_PATH = "bookmarks";
     private final static String EXTENSION = ".html";
 
-    private static final Parameters NOT_VALID = new Parameters(false, null, null, null, null);
+    private static final Parameters NOT_VALID = new Parameters(null, null, null, null);
 
-    final boolean validParameters;
-
-    final String filePath;
-    final String filterFolderName;
-    final String filteredPrettyBookmarkFilePath;
-    final String filteredBookmarkFilePath;
+    private final String inputBookmarkFilePath;
+    private final String folderName;
+    private final String outputPrettyBookmarkFilePath;
+    private final String outputBookmarkFilePath;
 
 
-    private Parameters(boolean validParameters, String bookmarkFilePath,String bookmarkFolderName, String prettyBoormarkFilePath, String boormarkFolderFilePath) {
-        this.validParameters = validParameters;
-        this.filePath = bookmarkFilePath;
-        this.filterFolderName = bookmarkFolderName;
-        this.filteredPrettyBookmarkFilePath = prettyBoormarkFilePath;
-        this.filteredBookmarkFilePath = boormarkFolderFilePath;
+    private Parameters(String inputBookmarkFilePath,String folderName, String outputPrettyBookmarkFilePath, String outputBookmarkFilePath) {
+        this.inputBookmarkFilePath = inputBookmarkFilePath;
+        this.folderName = folderName;
+        this.outputPrettyBookmarkFilePath = outputPrettyBookmarkFilePath;
+        this.outputBookmarkFilePath = outputBookmarkFilePath;
     }
 
     public static Parameters build(String[] args) {
+        boolean valid1Parameter = args.length == 1 && !args[0].trim().isEmpty();
+        boolean valid2Parameter = args.length == 2 && !args[0].trim().isEmpty() && !args[1].trim().isEmpty();
 
-        if (args.length != 2 || args[0].trim().isEmpty() || args[1].trim().isEmpty()) {
+        if (valid1Parameter) {
+            String inputBookmarkFilePath=args[0].trim();
+            String filePrefix = "all";
+            String outputPrettyBookmarkFilePath = getOutputPrettyBookmarkFilePath(inputBookmarkFilePath, filePrefix);
+            String outputBookmarkFilePath =  getOutputBookmarkFilePath(inputBookmarkFilePath, filePrefix);
+            return new Parameters(inputBookmarkFilePath, "Barra de marcadores", outputPrettyBookmarkFilePath, outputBookmarkFilePath);
+        } else if (valid2Parameter) {
+            String inputBookmarkFilePath=args[0].trim();
+            String folderName=args[1].trim();
+            String filePrefix = folderName;
+            String outputPrettyBookmarkFilePath = getOutputPrettyBookmarkFilePath(inputBookmarkFilePath, filePrefix);
+            String outputBookmarkFilePath =  getOutputBookmarkFilePath(inputBookmarkFilePath, filePrefix);
+            return new Parameters( inputBookmarkFilePath, folderName, outputPrettyBookmarkFilePath, outputBookmarkFilePath);
+        } else {
             return Parameters.NOT_VALID;
         }
-
-        String bookmarkFilePath = args[0];
-        String folderName = args[1];
-
-        String path = new File(bookmarkFilePath).getParentFile().getAbsolutePath();
-        String prettyBookmarkFilePath = path + "\\" + DEFAULT_PRETTY_BOOKMARK_FILE_PATH + folderName + EXTENSION;
-        String bookmarkFolderFilePath = path + "\\" + DEFAULT_BOOKMARK_FOLDER_FILE_PATH + folderName + EXTENSION;
-
-        return new Parameters(true, bookmarkFilePath, folderName, prettyBookmarkFilePath, bookmarkFolderFilePath);
-
     }
+
+
+    private static String getOutputPrettyBookmarkFilePath(String bookmarkFilePath, String filePostfix) {
+        String path = new File(bookmarkFilePath).getParentFile().getAbsolutePath();
+        String prettyBookmarkFilePath = path + File.separator + DEFAULT_PREFIX_OUTPUT_PRETTY_BOOKMARK_FILE_PATH + filePostfix + EXTENSION;
+        return prettyBookmarkFilePath;
+    }
+
+    private static String getOutputBookmarkFilePath(String bookmarkFilePath, String filePostfix) {
+        String path = new File(bookmarkFilePath).getParentFile().getAbsolutePath();
+        String prettyBookmarkFilePath = path + File.separator + DEFAULT_PREFIX_OUTPUT_BOOKMARK_FILE_PATH + filePostfix + EXTENSION;
+        return prettyBookmarkFilePath;
+    }
+
 
     public boolean isValidParameters() {
-        return validParameters;
+        return inputBookmarkFilePath!=null;
     }
 
-    public String getFilePath() {
-        return filePath;
+
+    public String getInputBookmarkFilePath() {
+        return inputBookmarkFilePath;
     }
 
-    public String getFilteredPrettyBookmarkFilePath() {
-        return filteredPrettyBookmarkFilePath;
+    public String getFolderName() {
+        return folderName;
     }
 
-    public String getFilteredBookmarkFilePath() {
-        return filteredBookmarkFilePath;
+    public String getOutputPrettyBookmarkFilePath() {
+        return outputPrettyBookmarkFilePath;
     }
 
-    public String getFilterFolderName() {
-        return filterFolderName;
+    public String getOutputBookmarkFilePath() {
+        return outputBookmarkFilePath;
     }
 
+    public boolean existFolderName() {
+        return folderName!=null;
+    }
 }

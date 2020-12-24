@@ -28,7 +28,6 @@ public class NetscapeBookmarkPrettifier {
         if (args.length == 0) {
             System.out.println(fileService.readFileFromResourcesAsString(USAGE_DOCUMENT));
             System.exit(0);
-
         }
 
         Parameters parameters = Parameters.build(args);
@@ -46,32 +45,38 @@ public class NetscapeBookmarkPrettifier {
 
 
     private void go(Parameters parameters) {
-
-        List<String> lines = filterExtractor.getLinesForBookmarkFolder(parameters.getFilePath(), parameters.getFilterFolderName());
-        String message = generatePrettyFile(parameters.getFilteredPrettyBookmarkFilePath(), lines, parameters.getFilterFolderName());
-        System.out.println(message);
-        message = generateFolderBookmarkFile(parameters.getFilteredBookmarkFilePath(), lines);
-        System.out.println(message);
-
+        String inputBookmarkFilePath = parameters.getInputBookmarkFilePath();
+        String folderNameToBeUsed = getFolderNameToBeUsed(parameters, inputBookmarkFilePath);
+        List<String> lines = filterExtractor.getLinesForBookmarkFolder(inputBookmarkFilePath, folderNameToBeUsed);
+        generatePrettyFile(parameters.getOutputPrettyBookmarkFilePath(), lines, parameters.getFolderName());
+        generateFolderBookmarkFile(parameters.getOutputBookmarkFilePath(), lines);
     }
 
 
-    private String generatePrettyFile(String fileName, List<String> lines, String filterFolderName) {
+    private void generatePrettyFile(String fileName, List<String> lines, String folderName) {
         List<String> linesToBeRenderedAsHtml = new ArrayList<>();
-        linesToBeRenderedAsHtml.add("<DT><H2>" + filterFolderName + "</H3>");
+        linesToBeRenderedAsHtml.add("<DT><H2>" + folderName + "</H3>");
         linesToBeRenderedAsHtml.addAll(lines.subList(1, lines.size()));
         List<String> prettifiedLines = htmlPrettifierService.prettifyLines(linesToBeRenderedAsHtml);
         List<String> prettyHTMLFile = htmlTemplateService.applyTemplate(TEMPLATE_PRETTY_HTML, prettifiedLines);
         fileService.writeFile(fileName, prettyHTMLFile);
-        return String.format(SUCCESS_GENERATING_FILE, fileName);
+        System.out.println(String.format(SUCCESS_GENERATING_FILE, fileName));
     }
 
 
-    private String generateFolderBookmarkFile(String fileName, List<String> lines) {
+    private void generateFolderBookmarkFile(String fileName, List<String> lines) {
         List<String> folderBookmarkHTMLFile = htmlTemplateService.applyTemplate(TEMPLATE_FOLDER_BOOKMARK_HTML, lines);
         fileService.writeFile(fileName, folderBookmarkHTMLFile);
-        return String.format(SUCCESS_GENERATING_FILE, fileName);
+        System.out.println(String.format(SUCCESS_GENERATING_FILE, fileName));
     }
 
-
+    private String getFolderNameToBeUsed(Parameters parameters, String inputBookmarkFilePath) {
+        String folderName;
+        if (!parameters.existFolderName()) {
+            folderName=filterExtractor.getNameOfRootFolder(inputBookmarkFilePath);
+        } else {
+            folderName= parameters.getFolderName();
+        }
+        return folderName;
+    }
 }

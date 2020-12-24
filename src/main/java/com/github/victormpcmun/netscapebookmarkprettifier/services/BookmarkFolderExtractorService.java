@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class BookmarkFolderExtractorService {
 
-    public List<String> getLinesForBookmarkFolder(String path, String bookmarkFolderName) {
+    private static final String CLOSE_H3="</H3>";
+
+    public List<String> getLinesForBookmarkFolder(String path, String folderName) {
 
         List<String> result = new ArrayList<>();
 
@@ -22,7 +23,7 @@ public class BookmarkFolderExtractorService {
                 String line = scanner.nextLine();
 
                 if (!foundFolder) {
-                    foundFolder = lineContainsFolderName(line, bookmarkFolderName);
+                    foundFolder = lineContainsFolderName(line, folderName);
                     if (foundFolder) {
                         folderIndentationLevel = calculateIndentation(line);
                     }
@@ -35,23 +36,40 @@ public class BookmarkFolderExtractorService {
                     }
                     result.add(line);
                 }
-
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException("File Not Found:" + path);
         }
-
         return result;
     }
 
 
+    public String getNameOfRootFolder(String path) {
+
+        try (Scanner scanner = new Scanner(new File(path))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.endsWith(CLOSE_H3)) {
+                    int init = line.lastIndexOf(">");
+                    int end = line.length()-CLOSE_H3.length();
+                    return line.substring(init, end);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File Not Found:" + path);
+        }
+        throw new RuntimeException("Can not find root folder name");
+    }
+
+
+
+
     private boolean lineContainsFolderName(String line, String folderName) {
-        String folderNameAndH3Tag = folderName + "</H3>";
+        String folderNameAndH3Tag = folderName + CLOSE_H3;
         int expectedPositionForFolderNameAndH3Tag = line.length() - folderNameAndH3Tag.length();
         int actualPositionForFolderNameAndH3Tag = line.lastIndexOf(folderNameAndH3Tag);
         boolean matchPosition = expectedPositionForFolderNameAndH3Tag == actualPositionForFolderNameAndH3Tag;
         return (actualPositionForFolderNameAndH3Tag >= 0 && matchPosition);
-
     }
 
     private int calculateIndentation(String line) {
