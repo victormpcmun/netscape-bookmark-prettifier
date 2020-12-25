@@ -1,8 +1,8 @@
 package com.github.victormpcmun.netscapebookmarkprettifier;
 
 import com.github.victormpcmun.netscapebookmarkprettifier.model.Parameters;
-import com.github.victormpcmun.netscapebookmarkprettifier.services.FileService;
 import com.github.victormpcmun.netscapebookmarkprettifier.services.BookmarkFolderExtractorService;
+import com.github.victormpcmun.netscapebookmarkprettifier.services.FileService;
 import com.github.victormpcmun.netscapebookmarkprettifier.services.HTMLPrettifierService;
 import com.github.victormpcmun.netscapebookmarkprettifier.services.HTMLTemplateService;
 

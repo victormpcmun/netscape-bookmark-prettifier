@@ -1,1 +1,1 @@
-java -jar ./target/NetscapeBookmarkPrettifier.jar %1  %2
+java -jar %~p0/target/NetscapeBookmarkPrettifier.jar %1  %2
