@@ -11,6 +11,13 @@ It works as a command line that receives a export bookmark file (all browser exp
 
 See `./resources/usage.txt` to deep deeper in the usage.    
 
+Generate jar:
+
+```	
+git clone https://github.com/victormpcmun/NetscapeBookmarkPrettifier	
+mvn clean package	
+```
+
 In Linux:
 ```
 ./run.sh <PATH_TO_HTML_BOOKMARK_FILE> <FOLDER_NAME>
